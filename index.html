@@ -151,6 +151,38 @@
             letter-spacing: 0.5px;
         }
         
+        .bomba-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bomba-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 200, 232, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .bomba-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 200, 232, 0.2);
+        }
+        
+        .bomba-btn:hover::before {
+            left: 100%;
+        }
+        
+        .bomba-btn.active {
+            background: rgba(74, 200, 232, 0.25) !important;
+            border-color: #4AC8E8 !important;
+            box-shadow: 0 0 15px rgba(74, 200, 232, 0.3);
+        }
+        
         .marca-btn::before {
             content: '';
             position: absolute;
@@ -687,12 +719,29 @@
                 
                 <div class="cascada-section">
                     <label style="color: #1B5F7A; font-weight: 700; margin-bottom: 12px; display: block;">💧 Sistema de Cascada</label>
-                    <select id="cascada">
+                    <select id="cascada" style="margin-bottom: 20px;">
                         <option value="no">Sin cascada</option>
                         <option value="30">Cascada 30cm</option>
                         <option value="60">Cascada 60cm</option>
                         <option value="90">Cascada 90cm</option>
                     </select>
+                    
+                    <div id="bomba-cascada-opciones" style="display: none; margin-top: 20px;">
+                        <label style="color: #1B5F7A; font-weight: 700; margin-bottom: 15px; display: block;">⚡ Configuración de Bomba</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <button class="bomba-btn active" data-tipo="independiente" style="padding: 12px 15px; border: 2px solid rgba(74, 200, 232, 0.4); border-radius: 10px; background: rgba(74, 200, 232, 0.15); color: #1B5F7A; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.9em;">
+                                Bomba Independiente
+                            </button>
+                            <button class="bomba-btn" data-tipo="integrada" style="padding: 12px 15px; border: 2px solid rgba(74, 200, 232, 0.3); border-radius: 10px; background: rgba(255, 255, 255, 0.8); color: #1B5F7A; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.9em;">
+                                Sistema Integrado
+                            </button>
+                        </div>
+                        <div style="margin-top: 12px; padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px; font-size: 0.85em; color: #1B5F7A;">
+                            <div id="bomba-info">
+                                💡 <strong>Independiente:</strong> Bomba separada para cascada, sistema principal sin cambios.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -833,6 +882,7 @@
         const inputs = document.querySelectorAll('input');
         const cascadaSelect = document.getElementById('cascada');
         const marcaBtns = document.querySelectorAll('.marca-btn');
+        const bombaBtns = document.querySelectorAll('.bomba-btn');
         
         // Event listeners
         shapeOptions.forEach(option => {
@@ -852,11 +902,23 @@
             });
         });
         
+        bombaBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.bomba-btn.active').classList.remove('active');
+                btn.classList.add('active');
+                actualizarInfoBomba();
+                calcular();
+            });
+        });
+        
         inputs.forEach(input => {
             input.addEventListener('input', calcular);
         });
         
-        cascadaSelect.addEventListener('change', calcular);
+        cascadaSelect.addEventListener('change', () => {
+            mostrarOpcionesBomba();
+            calcular();
+        });
         
         function mostrarDimensiones(shape) {
             document.getElementById('dimensiones-rectangular').style.display = 'none';
@@ -926,16 +988,51 @@
             return area;
         }
         
+        function mostrarOpcionesBomba() {
+            const cascadaTamaño = cascadaSelect.value;
+            const opcionesDiv = document.getElementById('bomba-cascada-opciones');
+            
+            if (cascadaTamaño !== 'no') {
+                opcionesDiv.style.display = 'block';
+                actualizarInfoBomba();
+            } else {
+                opcionesDiv.style.display = 'none';
+            }
+        }
+        
+        function actualizarInfoBomba() {
+            const tipoBomba = document.querySelector('.bomba-btn.active')?.dataset.tipo || 'independiente';
+            const infoDiv = document.getElementById('bomba-info');
+            
+            if (tipoBomba === 'independiente') {
+                infoDiv.innerHTML = '💡 <strong>Independiente:</strong> Bomba separada para cascada, sistema principal sin cambios.';
+            } else {
+                infoDiv.innerHTML = '⚡ <strong>Sistema Integrado:</strong> Una sola bomba para piscina + cascada. Filtro aumenta de tamaño.';
+            }
+        }
+        
         function obtenerEspecificaciones(volumen) {
             let specs;
             
+            // Verificar si hay cascada y sistema integrado
+            const cascadaTamaño = cascadaSelect.value;
+            const tipoBomba = document.querySelector('.bomba-btn.active')?.dataset.tipo || 'independiente';
+            
+            // Si hay cascada integrada, ajustar la bomba principal
+            let bombaAdicional = 0;
+            if (cascadaTamaño !== 'no' && tipoBomba === 'integrada') {
+                if (cascadaTamaño === '30') bombaAdicional = 0.5;
+                else if (cascadaTamaño === '60') bombaAdicional = 0.5;
+                else if (cascadaTamaño === '90') bombaAdicional = 0.75;
+            }
+            
             // Aplicar tolerancia del 5% para evitar saltos bruscos
-            const tolerancia = 0.95; // 5% de tolerancia hacia abajo
+            const tolerancia = 0.95;
             
             if (volumen <= 40 * tolerancia || volumen <= 38) {
                 specs = {
                     filtro: '16"-18"',
-                    bomba: 0.5,
+                    bomba: 0.5 + bombaAdicional,
                     inyectores: '3-4',
                     skimmers: 1,
                     turnover: '6-8h',
@@ -945,7 +1042,7 @@
             } else if (volumen <= 60 * tolerancia || volumen <= 57) {
                 specs = {
                     filtro: '20"-22"',
-                    bomba: 0.75,
+                    bomba: 0.75 + bombaAdicional,
                     inyectores: '4-5',
                     skimmers: '1-2',
                     turnover: '6-8h',
@@ -955,7 +1052,7 @@
             } else if (volumen <= 80 * tolerancia || volumen <= 76) {
                 specs = {
                     filtro: '24"-26"',
-                    bomba: 1.0,
+                    bomba: 1.0 + bombaAdicional,
                     inyectores: '5-6',
                     skimmers: 2,
                     turnover: '6h',
@@ -965,7 +1062,7 @@
             } else if (volumen <= 100 * tolerancia || volumen <= 95) {
                 specs = {
                     filtro: '28"-30"',
-                    bomba: 1.5,
+                    bomba: 1.5 + bombaAdicional,
                     inyectores: '6-8',
                     skimmers: '2-3',
                     turnover: '6h',
@@ -975,13 +1072,26 @@
             } else {
                 specs = {
                     filtro: '32"-36"',
-                    bomba: 2.0,
+                    bomba: 2.0 + bombaAdicional,
                     inyectores: '8-10',
                     skimmers: 3,
                     turnover: '4-6h',
                     tipoFiltro: 'Aseglass Industrial',
                     velocidadFiltracion: '40-60 m³/h/m²'
                 };
+            }
+            
+            // Si la bomba integrada excede ciertos límites, subir el filtro
+            if (cascadaTamaño !== 'no' && tipoBomba === 'integrada') {
+                if (specs.bomba >= 1.25 && specs.filtro === '16"-18"') {
+                    specs.filtro = '20"-22"';
+                } else if (specs.bomba >= 1.5 && specs.filtro === '20"-22"') {
+                    specs.filtro = '24"-26"';
+                } else if (specs.bomba >= 2.0 && specs.filtro === '24"-26"') {
+                    specs.filtro = '28"-30"';
+                } else if (specs.bomba >= 2.75 && specs.filtro === '28"-30"') {
+                    specs.filtro = '32"-36"';
+                }
             }
             
             // Calcular tubería recomendada
@@ -1163,33 +1273,32 @@
             
             // Manejar cascada
             const cascadaTamaño = cascadaSelect.value;
+            const tipoBomba = document.querySelector('.bomba-btn.active')?.dataset.tipo || 'independiente';
+            
             if (cascadaTamaño !== 'no') {
                 const cascadaInfo = obtenerCascadaInfo(cascadaTamaño);
-                document.getElementById('bomba-cascada').textContent = cascadaInfo.bomba;
-                document.getElementById('caudal-cascada').textContent = cascadaInfo.caudal;
                 
-                const statusDiv = document.getElementById('cascada-status');
-                let statusHTML = '';
-                
-                if (cascadaInfo.independiente) {
-                    statusHTML += '<div class="warning">⚠️ Requiere bomba independiente</div>';
+                if (tipoBomba === 'independiente') {
+                    document.getElementById('bomba-cascada').textContent = cascadaInfo.bomba;
+                    document.getElementById('caudal-cascada').textContent = cascadaInfo.caudal;
+                    
+                    const statusDiv = document.getElementById('cascada-status');
+                    statusDiv.innerHTML = '<div class="success">✅ Sistema con bomba independiente configurado</div>';
                 } else {
-                    // Verificar regla del 40%
-                    const caudalCascadaMax = parseInt(cascadaInfo.caudal.split('-')[1]);
-                    const porcentaje = (caudalCascadaMax / caudal * 100).toFixed(1);
-                    if (porcentaje > 40) {
-                        statusHTML += '<div class="warning">⚠️ Excede 40% - Usar bomba independiente</div>';
-                    } else {
-                        statusHTML += '<div class="success">✅ Puede usar bomba principal</div>';
-                    }
+                    // Sistema integrado
+                    document.getElementById('bomba-cascada').textContent = 'Integrada en bomba principal';
+                    document.getElementById('caudal-cascada').textContent = cascadaInfo.caudal;
+                    
+                    const statusDiv = document.getElementById('cascada-status');
+                    statusDiv.innerHTML = '<div class="warning">⚡ Sistema integrado - Bomba y filtro aumentados</div>';
                 }
                 
-                statusHTML += `<div style="margin-top: 15px; font-size: 0.9em; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                const statusHTML = `<div style="margin-top: 15px; font-size: 0.9em; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
                     <strong>📐 Instalación:</strong> ${cascadaInfo.instalacion}<br>
                     <strong>💧 Caudal mínimo:</strong> ${cascadaInfo.velocidadMin}
                 </div>`;
                 
-                statusDiv.innerHTML = statusHTML;
+                document.getElementById('cascada-status').innerHTML += statusHTML;
                 document.getElementById('cascada-info').style.display = 'block';
             } else {
                 document.getElementById('cascada-info').style.display = 'none';
