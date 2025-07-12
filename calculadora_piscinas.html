@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Profesional de Piscinas - Sistema Aseglass</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4AC8E8 0%, #2B9BC7 50%, #1B5F7A 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+            animation: backgroundMove 20s ease-in-out infinite;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="waves" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M0,50 Q25,30 50,50 T100,50" stroke="white" stroke-width="0.5" fill="none" opacity="0.1"/><path d="M0,60 Q25,40 50,60 T100,60" stroke="white" stroke-width="0.3" fill="none" opacity="0.08"/></pattern></defs><rect width="100" height="100" fill="url(%23waves)"/></svg>');
+            animation: waveFloat 25s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes backgroundMove {
+            0%, 100% { 
+                background: 
+                    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08) 0%, transparent 40%);
+            }
+            25% { 
+                background: 
+                    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 60% 60%, rgba(255,255,255,0.08) 0%, transparent 40%);
+            }
+            50% { 
+                background: 
+                    radial-gradient(circle at 60% 20%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 20% 60%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 40%);
+            }
+            75% { 
+                background: 
+                    radial-gradient(circle at 40% 80%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 40%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.08) 0%, transparent 40%);
+            }
+        }
+        
+        @keyframes waveFloat {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-5px, -10px) rotate(1deg); }
+            50% { transform: translate(10px, 5px) rotate(-1deg); }
+            75% { transform: translate(-10px, 10px) rotate(0.5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: 
+                0 25px 50px rgba(27, 95, 122, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4AC8E8 0%, #2B9BC7 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="20" cy="60" r="1" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(10px, -10px) rotate(1deg); }
+            66% { transform: translate(-10px, 10px) rotate(-1deg); }
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: 800;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+            font-weight: 300;
+        }
+        
+        .marca-btn {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-size: 1.1em;
+            font-weight: 700;
+            text-transform: none;
+            letter-spacing: 0.5px;
+        }
+        
+        .marca-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .marca-btn:hover {
+            background: rgba(255,255,255,0.3) !important;
+            border-color: rgba(255,255,255,0.7) !important;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .marca-btn:hover::before {
+            left: 100%;
+        }
+        
+        .marca-btn.active {
+            background: linear-gradient(135deg, rgba(74, 200, 232, 0.4), rgba(43, 155, 199, 0.3)) !important;
+            border-color: #4AC8E8 !important;
+            box-shadow: 
+                0 0 30px rgba(74, 200, 232, 0.4),
+                0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            animation: activeGlow 2s ease-in-out infinite alternate;
+        }
+        
+        .marca-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+        
+        @keyframes activeGlow {
+            0% { 
+                box-shadow: 
+                    0 0 30px rgba(74, 200, 232, 0.4),
+                    0 5px 15px rgba(0,0,0,0.1);
+            }
+            100% { 
+                box-shadow: 
+                    0 0 40px rgba(74, 200, 232, 0.6),
+                    0 8px 20px rgba(0,0,0,0.15);
+            }
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            gap: 0;
+            min-height: 700px;
+        }
+        
+        .input-section {
+            padding: 40px 35px;
+            background: linear-gradient(180deg, #f8fbfd 0%, #f0f8fb 100%);
+            border-right: 1px solid rgba(74, 200, 232, 0.2);
+            position: relative;
+        }
+        
+        .input-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #4AC8E8, #2B9BC7);
+        }
+        
+        .results-section {
+            padding: 40px 35px;
+            background: white;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 30px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: #1B5F7A;
+            font-size: 1.15em;
+            letter-spacing: 0.5px;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid rgba(74, 200, 232, 0.3);
+            border-radius: 15px;
+            font-size: 1.1em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            color: #1B5F7A;
+            font-weight: 500;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4AC8E8;
+            box-shadow: 0 0 0 4px rgba(74, 200, 232, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        input:hover, select:hover {
+            border-color: #2B9BC7;
+        }
+        
+        .shape-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .shape-option {
+            padding: 30px 20px;
+            border: 2px solid rgba(74, 200, 232, 0.3);
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .shape-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 200, 232, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .shape-option:hover::before {
+            left: 100%;
+        }
+        
+        .shape-option:hover {
+            border-color: #4AC8E8;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(74, 200, 232, 0.2);
+        }
+        
+        .shape-option.active {
+            border-color: #4AC8E8;
+            background: linear-gradient(135deg, #4AC8E8 0%, #2B9BC7 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 200, 232, 0.3);
+        }
+        
+        .shape-icon {
+            font-size: 3.2em;
+            margin-bottom: 12px;
+            display: block;
+            font-weight: bold;
+        }
+        
+        .cascada-section {
+            background: linear-gradient(135deg, rgba(27, 95, 122, 0.15) 0%, rgba(43, 155, 199, 0.15) 100%);
+            backdrop-filter: blur(15px);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+            border: 1px solid rgba(74, 200, 232, 0.3);
+            box-shadow: 0 5px 20px rgba(74, 200, 232, 0.1);
+        }
+        
+        .cascada-section select {
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid rgba(74, 200, 232, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            color: #1B5F7A;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        
+        .cascada-section select:focus {
+            outline: none;
+            border-color: #4AC8E8;
+            box-shadow: 0 0 0 4px rgba(74, 200, 232, 0.15);
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .cascada-section select:hover {
+            border-color: #2B9BC7;
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-1px);
+        }
+        
+        .cascada-section label {
+            color: #1B5F7A !important;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+        }
+        
+        .results-card {
+            background: linear-gradient(135deg, #4AC8E8 0%, #2B9BC7 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(74, 200, 232, 0.3);
+        }
+        
+        .results-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .results-card h3 {
+            font-size: 1.6em;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            font-weight: 700;
+        }
+        
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .spec-item {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 20px 15px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .spec-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.8s;
+        }
+        
+        .spec-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255,255,255,0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .spec-item:hover::before {
+            left: 100%;
+        }
+        
+        .spec-value {
+            font-size: 2em;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .spec-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .aseglass-card {
+            background: linear-gradient(135deg, #1B5F7A 0%, #2B9BC7 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            border: 2px solid #4AC8E8;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .aseglass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="2" fill="white" opacity="0.05"/><circle cx="90" cy="90" r="2" fill="white" opacity="0.05"/><circle cx="50" cy="25" r="1.5" fill="white" opacity="0.05"/><circle cx="25" cy="75" r="1.5" fill="white" opacity="0.05"/><circle cx="75" cy="50" r="1" fill="white" opacity="0.05"/></svg>');
+            pointer-events: none;
+        }
+        
+        .aseglass-info {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .cascada-results {
+            background: linear-gradient(135deg, #2B9BC7 0%, #1B5F7A 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+            border: 1px solid #4AC8E8;
+        }
+        
+        .warning {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .success {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(81, 207, 102, 0.3);
+        }
+        
+        .tech-card {
+            background: linear-gradient(135deg, rgba(27, 95, 122, 0.05) 0%, rgba(43, 155, 199, 0.05) 100%);
+            border: 1px solid rgba(74, 200, 232, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .tech-card h3 {
+            color: #1B5F7A;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .tech-item {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(74, 200, 232, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tech-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 200, 232, 0.1), transparent);
+            transition: left 0.8s;
+        }
+        
+        .tech-item:hover {
+            border-color: #4AC8E8;
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(74, 200, 232, 0.2);
+        }
+        
+        .tech-item:hover::before {
+            left: 100%;
+        }
+        
+        .tech-value {
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2B9BC7;
+            margin-bottom: 5px;
+        }
+        
+        .tech-label {
+            font-size: 0.9em;
+            color: #1B5F7A;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid rgba(74, 200, 232, 0.2);
+            }
+            
+            .input-section::before {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .spec-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .shape-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Calculadora Profesional de Piscinas</h1>
+            <p>Sistema de Dimensionamiento con Filtración Aseglass</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label>Forma de la Piscina</label>
+                    <div class="shape-selector">
+                        <div class="shape-option active" data-shape="rectangular">
+                            <div class="shape-icon">▭</div>
+                            <div>Rectangular</div>
+                        </div>
+                        <div class="shape-option" data-shape="circular">
+                            <div class="shape-icon">●</div>
+                            <div>Circular</div>
+                        </div>
+                        <div class="shape-option" data-shape="ovalada">
+                            <div class="shape-icon">⬭</div>
+                            <div>Ovalada</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="dimensiones-rectangular">
+                    <div class="form-group">
+                        <label>Dimensiones (metros)</label>
+                        <div class="input-row">
+                            <input type="number" id="largo" placeholder="Largo" step="0.1" min="1">
+                            <span style="color: #2B9BC7; font-weight: bold; font-size: 1.2em;">×</span>
+                            <input type="number" id="ancho" placeholder="Ancho" step="0.1" min="1">
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="dimensiones-circular" style="display: none;">
+                    <div class="form-group">
+                        <label>Diámetro (metros)</label>
+                        <input type="number" id="diametro" placeholder="Diámetro" step="0.1" min="1">
+                    </div>
+                </div>
+                
+                <div id="dimensiones-ovalada" style="display: none;">
+                    <div class="form-group">
+                        <label>Dimensiones (metros)</label>
+                        <div class="input-row">
+                            <input type="number" id="radio-mayor" placeholder="Radio Mayor" step="0.1" min="1">
+                            <span style="color: #2B9BC7; font-weight: bold; font-size: 1.2em;">×</span>
+                            <input type="number" id="radio-menor" placeholder="Radio Menor" step="0.1" min="1">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>🌊 Profundidad (metros)</label>
+                    <div class="input-row">
+                        <input type="number" id="prof-min" placeholder="Mínima" step="0.1" min="0.5">
+                        <span style="color: #2B9BC7; font-weight: bold; font-size: 1.2em;">-</span>
+                        <input type="number" id="prof-max" placeholder="Máxima" step="0.1" min="0.5">
+                    </div>
+                </div>
+                
+                <div class="cascada-section">
+                    <label style="color: #1B5F7A; font-weight: 700; margin-bottom: 12px; display: block;">💧 Sistema de Cascada</label>
+                    <select id="cascada">
+                        <option value="no">Sin cascada</option>
+                        <option value="30">Cascada 30cm</option>
+                        <option value="60">Cascada 60cm</option>
+                        <option value="90">Cascada 90cm</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div class="results-card">
+                    <h3>📊 Especificaciones del Sistema</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                        <!-- Fila superior -->
+                        <div class="spec-item">
+                            <div class="spec-value" id="volumen-result">- m³</div>
+                            <div class="spec-label">Volumen</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-value" id="filtro-result">-"</div>
+                            <div class="spec-label">Filtro Diámetro</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-value" id="bomba-result">- HP</div>
+                            <div class="spec-label">Bomba Principal</div>
+                        </div>
+                        <!-- Fila inferior -->
+                        <div class="spec-item">
+                            <div class="spec-value" id="inyectores-result">-</div>
+                            <div class="spec-label">Inyectores</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-value" id="skimmers-result">-</div>
+                            <div class="spec-label">Skimmers</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-value" id="caudal-result">- m³/h</div>
+                            <div class="spec-label">Caudal Requerido</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="aseglass-card">
+                    <div class="aseglass-info">
+                        <div style="margin-bottom: 25px;">
+                            <label style="color: white; font-weight: 700; margin-bottom: 15px; display: block; font-size: 1.1em;">🏭 Marca de Filtro</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <button class="marca-btn active" data-marca="panda" style="padding: 15px 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px; background: rgba(255,255,255,0.2); color: white; font-weight: 600; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(10px);">
+                                    Panda
+                                </button>
+                                <button class="marca-btn" data-marca="emaux" style="padding: 15px 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px; background: rgba(255,255,255,0.1); color: white; font-weight: 600; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(10px);">
+                                    Emaux
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <h3 style="margin-bottom: 20px; font-size: 1.6em; text-align: center;">🔬 Especificaciones Aseglass</h3>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                            <div style="background: rgba(255,255,255,0.15); padding: 25px; border-radius: 12px; text-align: center;">
+                                <div style="font-size: 2.5em; font-weight: bold; margin-bottom: 10px; color: #4AC8E8;" id="aseglass-kg">- kg</div>
+                                <div style="font-size: 1.1em; opacity: 0.9; font-weight: 600;">Aseglass Requerido</div>
+                                <div style="font-size: 0.85em; opacity: 0.7; margin-top: 8px;" id="modelo-filtro">Según especificaciones técnicas</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; font-size: 0.9em;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: center;">
+                                    <div>
+                                        <div style="font-size: 1.3em; font-weight: bold; color: #4AC8E8;" id="volumen-optimo">- m³</div>
+                                        <div style="opacity: 0.8;">Volumen Óptimo 6h</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 1.3em; font-weight: bold; color: #4AC8E8;" id="arena-reemplazada">- kg</div>
+                                        <div style="opacity: 0.8;">Arena Reemplazada</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tech-card">
+                    <h3>🔧 Especificaciones Técnicas</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <!-- Fila superior -->
+                        <div class="tech-item">
+                            <div class="tech-value" id="tipo-filtro-result">-</div>
+                            <div class="tech-label">Tipo de Filtro</div>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-value" id="turnover-result">-</div>
+                            <div class="tech-label">Turnover Rate</div>
+                        </div>
+                        <!-- Fila inferior -->
+                        <div class="tech-item">
+                            <div class="tech-value" id="tuberia-succion-result">-</div>
+                            <div class="tech-label">Tubería Succión</div>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-value" id="tuberia-retorno-result">-</div>
+                            <div class="tech-label">Tubería Retorno</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tech-card">
+                    <h3>💧 Cálculos de Agua y Mantenimiento</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <!-- Fila superior -->
+                        <div class="tech-item">
+                            <div class="tech-value" id="agua-1cm">- L</div>
+                            <div class="tech-label">1cm Profundidad</div>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-value" id="evaporacion-dia">- L/día</div>
+                            <div class="tech-label">Evaporación Diaria</div>
+                        </div>
+                        <!-- Fila inferior -->
+                        <div class="tech-item">
+                            <div class="tech-value" id="retrolavado">- L</div>
+                            <div class="tech-label">Retrolavado</div>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-value" id="galones-total">- gal</div>
+                            <div class="tech-label">Volumen Total</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="cascada-info" class="cascada-results" style="display: none;">
+                    <h3>🌊 Sistema de Cascada</h3>
+                    <div style="display: grid; gap: 15px;">
+                        <div><strong>Bomba Cascada:</strong> <span id="bomba-cascada">-</span></div>
+                        <div><strong>Caudal Adicional:</strong> <span id="caudal-cascada">-</span></div>
+                        <div id="cascada-status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Elementos del DOM
+        const shapeOptions = document.querySelectorAll('.shape-option');
+        const inputs = document.querySelectorAll('input');
+        const cascadaSelect = document.getElementById('cascada');
+        const marcaBtns = document.querySelectorAll('.marca-btn');
+        
+        // Event listeners
+        shapeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelector('.shape-option.active').classList.remove('active');
+                option.classList.add('active');
+                mostrarDimensiones(option.dataset.shape);
+                calcular();
+            });
+        });
+        
+        marcaBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.marca-btn.active').classList.remove('active');
+                btn.classList.add('active');
+                calcular();
+            });
+        });
+        
+        inputs.forEach(input => {
+            input.addEventListener('input', calcular);
+        });
+        
+        cascadaSelect.addEventListener('change', calcular);
+        
+        function mostrarDimensiones(shape) {
+            document.getElementById('dimensiones-rectangular').style.display = 'none';
+            document.getElementById('dimensiones-circular').style.display = 'none';
+            document.getElementById('dimensiones-ovalada').style.display = 'none';
+            
+            document.getElementById(`dimensiones-${shape}`).style.display = 'block';
+        }
+        
+        function calcularVolumen() {
+            const shape = document.querySelector('.shape-option.active').dataset.shape;
+            let volumen = 0;
+            
+            const profMin = parseFloat(document.getElementById('prof-min').value) || 0;
+            const profMax = parseFloat(document.getElementById('prof-max').value) || profMin || 0;
+            const profPromedio = profMax > 0 ? (profMin + profMax) / 2 : profMin;
+            
+            if (profPromedio <= 0) return 0;
+            
+            switch(shape) {
+                case 'rectangular':
+                    const largo = parseFloat(document.getElementById('largo').value) || 0;
+                    const ancho = parseFloat(document.getElementById('ancho').value) || 0;
+                    volumen = largo * ancho * profPromedio;
+                    break;
+                    
+                case 'circular':
+                    const diametro = parseFloat(document.getElementById('diametro').value) || 0;
+                    const radio = diametro / 2;
+                    volumen = 3.14 * radio * radio * profPromedio;
+                    break;
+                    
+                case 'ovalada':
+                    const radioMayor = parseFloat(document.getElementById('radio-mayor').value) || 0;
+                    const radioMenor = parseFloat(document.getElementById('radio-menor').value) || 0;
+                    volumen = 3.14 * radioMayor * radioMenor * profPromedio;
+                    break;
+            }
+            
+            return Math.round(volumen * 10) / 10;
+        }
+        
+        function calcularAreaSuperficie() {
+            const shape = document.querySelector('.shape-option.active').dataset.shape;
+            let area = 0;
+            
+            switch(shape) {
+                case 'rectangular':
+                    const largo = parseFloat(document.getElementById('largo').value) || 0;
+                    const ancho = parseFloat(document.getElementById('ancho').value) || 0;
+                    area = largo * ancho;
+                    break;
+                    
+                case 'circular':
+                    const diametro = parseFloat(document.getElementById('diametro').value) || 0;
+                    const radio = diametro / 2;
+                    area = 3.14 * radio * radio;
+                    break;
+                    
+                case 'ovalada':
+                    const radioMayor = parseFloat(document.getElementById('radio-mayor').value) || 0;
+                    const radioMenor = parseFloat(document.getElementById('radio-menor').value) || 0;
+                    area = 3.14 * radioMayor * radioMenor;
+                    break;
+            }
+            
+            return area;
+        }
+        
+        function obtenerEspecificaciones(volumen) {
+            let specs;
+            
+            // Aplicar tolerancia del 5% para evitar saltos bruscos
+            const tolerancia = 0.95; // 5% de tolerancia hacia abajo
+            
+            if (volumen <= 40 * tolerancia || volumen <= 38) {
+                specs = {
+                    filtro: '16"-18"',
+                    bomba: 0.5,
+                    inyectores: '3-4',
+                    skimmers: 1,
+                    turnover: '6-8h',
+                    tipoFiltro: 'Arena + Aseglass',
+                    velocidadFiltracion: '30-40 m³/h/m²'
+                };
+            } else if (volumen <= 60 * tolerancia || volumen <= 57) {
+                specs = {
+                    filtro: '20"-22"',
+                    bomba: 0.75,
+                    inyectores: '4-5',
+                    skimmers: '1-2',
+                    turnover: '6-8h',
+                    tipoFiltro: 'Arena + Aseglass',
+                    velocidadFiltracion: '30-40 m³/h/m²'
+                };
+            } else if (volumen <= 80 * tolerancia || volumen <= 76) {
+                specs = {
+                    filtro: '24"-26"',
+                    bomba: 1.0,
+                    inyectores: '5-6',
+                    skimmers: 2,
+                    turnover: '6h',
+                    tipoFiltro: 'Aseglass Premium',
+                    velocidadFiltracion: '30-40 m³/h/m²'
+                };
+            } else if (volumen <= 100 * tolerancia || volumen <= 95) {
+                specs = {
+                    filtro: '28"-30"',
+                    bomba: 1.5,
+                    inyectores: '6-8',
+                    skimmers: '2-3',
+                    turnover: '6h',
+                    tipoFiltro: 'Aseglass Comercial',
+                    velocidadFiltracion: '30-50 m³/h/m²'
+                };
+            } else {
+                specs = {
+                    filtro: '32"-36"',
+                    bomba: 2.0,
+                    inyectores: '8-10',
+                    skimmers: 3,
+                    turnover: '4-6h',
+                    tipoFiltro: 'Aseglass Industrial',
+                    velocidadFiltracion: '40-60 m³/h/m²'
+                };
+            }
+            
+            // Calcular tubería recomendada
+            const caudal = volumen / 6;
+            if (caudal <= 5) {
+                specs.tuberiaSuccion = '2"';
+                specs.tuberiaRetorno = '1.5"-2"';
+            } else if (caudal <= 10) {
+                specs.tuberiaSuccion = '2.5"';
+                specs.tuberiaRetorno = '2"-2.5"';
+            } else if (caudal <= 15) {
+                specs.tuberiaSuccion = '3"';
+                specs.tuberiaRetorno = '2.5"-3"';
+            } else {
+                specs.tuberiaSuccion = '4"';
+                specs.tuberiaRetorno = '3"-4"';
+            }
+            
+            return specs;
+        }
+        
+        function calcularAseglass(filtroSize, volumen, marca = 'panda') {
+            // Datos reales separados por marca
+            const especificacionesPANDA = {
+                '14': { arena: 27, volumen6h: 40.9, volumen8h: 54.5, modelo: 'FPD14T' },
+                '16': { arena: 45, volumen6h: 47.4, volumen8h: 63.2, modelo: 'FPD16T' },
+                '19': { arena: 79, volumen6h: 54.0, volumen8h: 72.0, modelo: 'FPD19T' },
+                '24': { arena: 136, volumen6h: 67.8, volumen8h: 90.4, modelo: 'FPD24T' },
+                '26': { arena: 163, volumen6h: 98.1, volumen8h: 130.8, modelo: 'FPD26T' },
+                '31': { arena: 227, volumen6h: 133.6, volumen8h: 178.1, modelo: 'FPD31T' }
+            };
+            
+            const especificacionesEMAUX = {
+                '14': { arena: 20, volumen6h: 32.0, volumen8h: 43.0, modelo: 'P350 (35cm)' },
+                '16': { arena: 35, volumen6h: 46.0, volumen8h: 61.0, modelo: 'P400 (40cm)' },
+                '18': { arena: 45, volumen6h: 58.0, volumen8h: 78.0, modelo: 'P450 (45cm)' },
+                '20': { arena: 85, volumen6h: 81.0, volumen8h: 108.0, modelo: 'P500 (50cm)' },
+                '26': { arena: 145, volumen6h: 115.0, volumen8h: 153.0, modelo: 'P650 (65cm)' },
+                '28': { arena: 210, volumen6h: 143.0, volumen8h: 190.0, modelo: 'P700 (70cm)' }
+            };
+            
+            // Seleccionar especificaciones según marca
+            const especificacionesFiltros = marca === 'panda' ? especificacionesPANDA : especificacionesEMAUX;
+            const marcaNombre = marca === 'panda' ? 'PANDA' : 'EMAUX';
+            
+            // Extraer diámetro del rango
+            const diametros = filtroSize.match(/(\d+)"-(\d+)"/);
+            let diametroPromedio;
+            
+            if (diametros) {
+                const min = parseInt(diametros[1]);
+                const max = parseInt(diametros[2]);
+                diametroPromedio = Math.round((min + max) / 2);
+            } else {
+                const single = filtroSize.match(/(\d+)"/);
+                if (!single) return { aseglass: 0 };
+                diametroPromedio = parseInt(single[1]);
+            }
+            
+            // Buscar especificación exacta o la más cercana
+            let especificacion = especificacionesFiltros[diametroPromedio.toString()];
+            let claveUsada = diametroPromedio.toString();
+            
+            if (!especificacion) {
+                // Buscar el más cercano
+                const diametros = Object.keys(especificacionesFiltros).map(Number).sort((a, b) => a - b);
+                const cercano = diametros.reduce((prev, curr) => {
+                    return Math.abs(curr - diametroPromedio) < Math.abs(prev - diametroPromedio) ? curr : prev;
+                });
+                claveUsada = cercano.toString();
+                especificacion = especificacionesFiltros[claveUsada];
+            }
+            
+            if (!especificacion) return { aseglass: 0 };
+            
+            // Aseglass = Arena (misma cantidad requerida)
+            const aseglassKg = especificacion.arena;
+            
+            return { 
+                aseglass: aseglassKg,
+                volumenOptimo6h: especificacion.volumen6h,
+                volumenOptimo8h: especificacion.volumen8h,
+                modeloFiltro: `${marcaNombre} ${especificacion.modelo}`,
+                arenaOriginal: especificacion.arena
+            };
+        }
+        
+        function obtenerCascadaInfo(tamaño) {
+            switch(tamaño) {
+                case '30':
+                    return {
+                        bomba: '0.5 HP (evaluar 40% regla)',
+                        caudal: '2-6 m³/h',
+                        independiente: false,
+                        velocidadMin: '1.9 L/min/cm (57 L/min)',
+                        instalacion: 'Máx. 1.2m altura'
+                    };
+                case '60':
+                    return {
+                        bomba: '0.5 HP independiente',
+                        caudal: '3-8 m³/h',
+                        independiente: true,
+                        velocidadMin: '1.9 L/min/cm (114 L/min)',
+                        instalacion: 'Máx. 1.2m altura'
+                    };
+                case '90':
+                    return {
+                        bomba: '0.75-1.0 HP independiente',
+                        caudal: '5-10 m³/h',
+                        independiente: true,
+                        velocidadMin: '1.9 L/min/cm (171 L/min)',
+                        instalacion: 'Máx. 1.2m altura'
+                    };
+                default:
+                    return null;
+            }
+        }
+        
+        function calcular() {
+            const volumen = calcularVolumen();
+            
+            if (volumen <= 0) {
+                // Limpiar resultados
+                document.getElementById('volumen-result').textContent = '- m³';
+                document.getElementById('filtro-result').textContent = '-"';
+                document.getElementById('bomba-result').textContent = '- HP';
+                document.getElementById('inyectores-result').textContent = '-';
+                document.getElementById('skimmers-result').textContent = '-';
+                document.getElementById('caudal-result').textContent = '- m³/h';
+                document.getElementById('tipo-filtro-result').textContent = '-';
+                document.getElementById('turnover-result').textContent = '-';
+                document.getElementById('tuberia-succion-result').textContent = '-';
+                document.getElementById('tuberia-retorno-result').textContent = '-';
+                document.getElementById('aseglass-kg').textContent = '- kg';
+                document.getElementById('agua-1cm').textContent = '- L';
+                document.getElementById('evaporacion-dia').textContent = '- L';
+                document.getElementById('retrolavado').textContent = '- L';
+                document.getElementById('galones-total').textContent = '- gal';
+                document.getElementById('cascada-info').style.display = 'none';
+                return;
+            }
+            
+            const specs = obtenerEspecificaciones(volumen);
+            const caudal = Math.round(volumen / 6 * 10) / 10;
+            
+            // Actualizar resultados principales
+            document.getElementById('volumen-result').textContent = volumen + ' m³';
+            document.getElementById('filtro-result').textContent = specs.filtro;
+            document.getElementById('bomba-result').textContent = specs.bomba + ' HP';
+            document.getElementById('inyectores-result').textContent = specs.inyectores;
+            document.getElementById('skimmers-result').textContent = specs.skimmers;
+            document.getElementById('caudal-result').textContent = caudal + ' m³/h';
+            
+            // Actualizar especificaciones técnicas
+            document.getElementById('tipo-filtro-result').textContent = specs.tipoFiltro;
+            document.getElementById('turnover-result').textContent = specs.turnover;
+            document.getElementById('tuberia-succion-result').textContent = specs.tuberiaSuccion;
+            document.getElementById('tuberia-retorno-result').textContent = specs.tuberiaRetorno;
+            
+            // Calcular Aseglass con datos reales según marca seleccionada
+            const marcaSeleccionada = document.querySelector('.marca-btn.active').dataset.marca;
+            const aseglassData = calcularAseglass(specs.filtro, volumen, marcaSeleccionada);
+            document.getElementById('aseglass-kg').textContent = aseglassData.aseglass + ' kg';
+            document.getElementById('modelo-filtro').textContent = `${aseglassData.modeloFiltro} - Especificaciones técnicas`;
+            document.getElementById('volumen-optimo').textContent = aseglassData.volumenOptimo6h ? aseglassData.volumenOptimo6h.toFixed(1) + ' m³' : '- m³';
+            document.getElementById('arena-reemplazada').textContent = aseglassData.arenaOriginal ? aseglassData.arenaOriginal + ' kg' : '- kg';
+            
+            // Calcular información de agua
+            const areaSuperficie = calcularAreaSuperficie();
+            const agua1cm = Math.round(areaSuperficie * 10);
+            const evaporacionDia = Math.round(areaSuperficie * 5); // 5mm/día promedio
+            const retrolavadoLitros = Math.round(volumen * 0.05 * 1000); // 5% del volumen
+            const galones = Math.round(volumen * 264.17);
+            
+            document.getElementById('agua-1cm').textContent = agua1cm.toLocaleString() + ' L';
+            document.getElementById('evaporacion-dia').textContent = evaporacionDia.toLocaleString() + ' L';
+            document.getElementById('retrolavado').textContent = retrolavadoLitros.toLocaleString() + ' L';
+            document.getElementById('galones-total').textContent = galones.toLocaleString() + ' gal';
+            
+            // Manejar cascada
+            const cascadaTamaño = cascadaSelect.value;
+            if (cascadaTamaño !== 'no') {
+                const cascadaInfo = obtenerCascadaInfo(cascadaTamaño);
+                document.getElementById('bomba-cascada').textContent = cascadaInfo.bomba;
+                document.getElementById('caudal-cascada').textContent = cascadaInfo.caudal;
+                
+                const statusDiv = document.getElementById('cascada-status');
+                let statusHTML = '';
+                
+                if (cascadaInfo.independiente) {
+                    statusHTML += '<div class="warning">⚠️ Requiere bomba independiente</div>';
+                } else {
+                    // Verificar regla del 40%
+                    const caudalCascadaMax = parseInt(cascadaInfo.caudal.split('-')[1]);
+                    const porcentaje = (caudalCascadaMax / caudal * 100).toFixed(1);
+                    if (porcentaje > 40) {
+                        statusHTML += '<div class="warning">⚠️ Excede 40% - Usar bomba independiente</div>';
+                    } else {
+                        statusHTML += '<div class="success">✅ Puede usar bomba principal</div>';
+                    }
+                }
+                
+                statusHTML += `<div style="margin-top: 15px; font-size: 0.9em; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <strong>📐 Instalación:</strong> ${cascadaInfo.instalacion}<br>
+                    <strong>💧 Caudal mínimo:</strong> ${cascadaInfo.velocidadMin}
+                </div>`;
+                
+                statusDiv.innerHTML = statusHTML;
+                document.getElementById('cascada-info').style.display = 'block';
+            } else {
+                document.getElementById('cascada-info').style.display = 'none';
+            }
+        }
+        
+        // Calcular inicialmente
+        calcular();
+    </script>
+</body>
+</html>
