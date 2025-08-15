@@ -141,6 +141,52 @@
             font-weight: 300;
         }
         
+        .tipo-btn {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-size: 1.1em;
+            font-weight: 700;
+            text-transform: none;
+            letter-spacing: 0.5px;
+        }
+        
+        .tipo-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 200, 232, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .tipo-btn:hover {
+            background: rgba(74, 200, 232, 0.3) !important;
+            border-color: rgba(74, 200, 232, 0.7) !important;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(74, 200, 232, 0.2);
+        }
+        
+        .tipo-btn:hover::before {
+            left: 100%;
+        }
+        
+        .tipo-btn.active {
+            background: linear-gradient(135deg, rgba(74, 200, 232, 0.4), rgba(43, 155, 199, 0.3)) !important;
+            border-color: #4AC8E8 !important;
+            box-shadow: 
+                0 0 30px rgba(74, 200, 232, 0.4),
+                0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            animation: activeGlow 2s ease-in-out infinite alternate;
+        }
+        
+        .tipo-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+        
         .marca-btn {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -494,6 +540,33 @@
             letter-spacing: 0.5px;
         }
         
+        .bomba-card {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            border: 2px solid #4AC8E8;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bomba-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="2" fill="white" opacity="0.05"/><circle cx="90" cy="90" r="2" fill="white" opacity="0.05"/><circle cx="50" cy="25" r="1.5" fill="white" opacity="0.05"/><circle cx="25" cy="75" r="1.5" fill="white" opacity="0.05"/><circle cx="75" cy="50" r="1" fill="white" opacity="0.05"/></svg>');
+            pointer-events: none;
+        }
+        
+        .bomba-info {
+            position: relative;
+            z-index: 2;
+        }
+        
         .aseglass-card {
             background: linear-gradient(135deg, #1B5F7A 0%, #2B9BC7 100%);
             color: white;
@@ -656,16 +729,33 @@
     <div class="container">
         <div class="header">
             <h1>Calculadora Profesional de Piscinas</h1>
-            <p>Sistema de Dimensionamiento con Filtración Aseglass</p>
+            <p>Sistema de Dimensionamiento con Filtración Aseglass y Datos Técnicos de Bombas</p>
         </div>
         
         <div class="main-content">
             <div class="input-section">
                 <div class="form-group">
+                    <label>🏠 Tipo de Piscina</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                        <button class="tipo-btn active" data-tipo="residencial" style="padding: 18px 20px; border: 2px solid rgba(74, 200, 232, 0.4); border-radius: 12px; background: rgba(74, 200, 232, 0.25); color: #1B5F7A; font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 1.1em;">
+                            🏠 Residencial
+                        </button>
+                        <button class="tipo-btn" data-tipo="comercial" style="padding: 18px 20px; border: 2px solid rgba(74, 200, 232, 0.3); border-radius: 12px; background: white; color: #1B5F7A; font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 1.1em;">
+                            🏢 Comercial
+                        </button>
+                    </div>
+                    <div style="margin-top: 12px; padding: 12px; background: rgba(74, 200, 232, 0.1); border-radius: 8px; font-size: 0.9em; color: #1B5F7A;">
+                        <div id="tipo-info">
+                            🏠 <strong>Residencial:</strong> Turnover 6-8h, uso familiar estándar, sistemas optimizados para eficiencia.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
                     <label>Forma de la Piscina</label>
                     <div class="shape-selector">
                         <div class="shape-option active" data-shape="rectangular">
-                            <div class="shape-icon">▭</div>
+                            <div class="shape-icon">⬛</div>
                             <div>Rectangular</div>
                         </div>
                         <div class="shape-option" data-shape="circular">
@@ -778,6 +868,42 @@
                     </div>
                 </div>
                 
+                <div class="bomba-card">
+                    <div class="bomba-info">
+                        <h3 style="margin-bottom: 20px; font-size: 1.6em; text-align: center;">⚡ Especificaciones de Bomba</h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px;">
+                            <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; text-align: center;">
+                                <div style="font-size: 2em; font-weight: bold; margin-bottom: 8px; color: #4AC8E8;" id="bomba-modelo">Seleccionar</div>
+                                <div style="font-size: 1em; opacity: 0.9; font-weight: 600;">Modelo Recomendado</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; text-align: center;">
+                                <div style="font-size: 2em; font-weight: bold; margin-bottom: 8px; color: #4AC8E8;" id="bomba-caudal-real">- m³/h</div>
+                                <div style="font-size: 1em; opacity: 0.9; font-weight: 600;">Caudal Real Bomba</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 1.4em; font-weight: bold; color: #4AC8E8;" id="bomba-amperaje-110">- A</div>
+                                <div style="font-size: 0.85em; opacity: 0.8;">110V</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 1.4em; font-weight: bold; color: #4AC8E8;" id="bomba-amperaje-230">- A</div>
+                                <div style="font-size: 0.85em; opacity: 0.8;">230V</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 1.4em; font-weight: bold; color: #4AC8E8;" id="eficiencia-bomba">-%</div>
+                                <div style="font-size: 0.85em; opacity: 0.8;">Eficiencia</div>
+                            </div>
+                        </div>
+                        
+                        <div id="bomba-status" style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; font-size: 0.9em;">
+                            📊 Seleccione las dimensiones de la piscina para ver recomendaciones de bomba
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="aseglass-card">
                     <div class="aseglass-info">
                         <div style="margin-bottom: 25px;">
@@ -877,12 +1003,59 @@
     </div>
 
     <script>
+        // Base de datos de bombas con especificaciones técnicas
+        const bombasSilver = [
+            { hp: 0.75, caudal: 6.5, amperaje110: 6.2, amperaje230: 3.2, tipo: 'Silver' },
+            { hp: 1.0, caudal: 9.0, amperaje110: 7.3, amperaje230: 3.8, tipo: 'Silver' },
+            { hp: 1.2, caudal: 12.4, amperaje110: 8.4, amperaje230: 4.6, tipo: 'Silver' },
+            { hp: 1.5, caudal: 14.4, amperaje110: 10.7, amperaje230: 5.8, tipo: 'Silver' }
+        ];
+        
+        const bombasSupra = [
+            { hp: 1.5, caudal: 16.0, amperaje110: null, amperaje230: 5.2, tipo: 'Supra' },
+            { hp: 2.0, caudal: 23.0, amperaje110: null, amperaje230: 4.0, tipo: 'Supra' },
+            { hp: 2.5, caudal: 27.0, amperaje110: null, amperaje230: 8.6, tipo: 'Supra' },
+            { hp: 3.0, caudal: 32.0, amperaje110: null, amperaje230: 10.0, tipo: 'Supra' }
+        ];
+
+        // Base de datos de especificaciones de filtros
+        const especificacionesPANDA = {
+            '14': { arena: 27, volumen6h: 40.9, volumen8h: 54.5, modelo: 'FPD14T' },
+            '16': { arena: 45, volumen6h: 47.4, volumen8h: 63.2, modelo: 'FPD16T' },
+            '18': { arena: 52, volumen6h: 54.0, volumen8h: 72.0, modelo: 'FPD18T' },
+            '19': { arena: 79, volumen6h: 54.0, volumen8h: 72.0, modelo: 'FPD19T' },
+            '20': { arena: 85, volumen6h: 60.0, volumen8h: 80.0, modelo: 'FPD20T' },
+            '22': { arena: 110, volumen6h: 67.8, volumen8h: 90.4, modelo: 'FPD22T' },
+            '24': { arena: 136, volumen6h: 67.8, volumen8h: 90.4, modelo: 'FPD24T' },
+            '26': { arena: 163, volumen6h: 98.1, volumen8h: 130.8, modelo: 'FPD26T' },
+            '28': { arena: 190, volumen6h: 115.0, volumen8h: 153.0, modelo: 'FPD28T' },
+            '30': { arena: 210, volumen6h: 133.6, volumen8h: 178.1, modelo: 'FPD30T' },
+            '31': { arena: 227, volumen6h: 133.6, volumen8h: 178.1, modelo: 'FPD31T' },
+            '32': { arena: 250, volumen6h: 150.0, volumen8h: 200.0, modelo: 'FPD32T' },
+            '36': { arena: 320, volumen6h: 180.0, volumen8h: 240.0, modelo: 'FPD36T' }
+        };
+        
+        const especificacionesEMAUX = {
+            '14': { arena: 20, volumen6h: 32.0, volumen8h: 43.0, modelo: 'P350 (35cm)' },
+            '16': { arena: 35, volumen6h: 46.0, volumen8h: 61.0, modelo: 'P400 (40cm)' },
+            '18': { arena: 45, volumen6h: 58.0, volumen8h: 78.0, modelo: 'P450 (45cm)' },
+            '20': { arena: 85, volumen6h: 81.0, volumen8h: 108.0, modelo: 'P500 (50cm)' },
+            '22': { arena: 110, volumen6h: 95.0, volumen8h: 127.0, modelo: 'P550 (55cm)' },
+            '24': { arena: 130, volumen6h: 110.0, volumen8h: 147.0, modelo: 'P600 (60cm)' },
+            '26': { arena: 145, volumen6h: 115.0, volumen8h: 153.0, modelo: 'P650 (65cm)' },
+            '28': { arena: 210, volumen6h: 143.0, volumen8h: 190.0, modelo: 'P700 (70cm)' },
+            '30': { arena: 250, volumen6h: 165.0, volumen8h: 220.0, modelo: 'P750 (75cm)' },
+            '32': { arena: 300, volumen6h: 190.0, volumen8h: 253.0, modelo: 'P800 (80cm)' },
+            '36': { arena: 400, volumen6h: 240.0, volumen8h: 320.0, modelo: 'P900 (90cm)' }
+        };
+        
         // Elementos del DOM
         const shapeOptions = document.querySelectorAll('.shape-option');
         const inputs = document.querySelectorAll('input');
         const cascadaSelect = document.getElementById('cascada');
         const marcaBtns = document.querySelectorAll('.marca-btn');
         const bombaBtns = document.querySelectorAll('.bomba-btn');
+        const tipoBtns = document.querySelectorAll('.tipo-btn');
         
         // Event listeners
         shapeOptions.forEach(option => {
@@ -898,6 +1071,15 @@
             btn.addEventListener('click', () => {
                 document.querySelector('.marca-btn.active').classList.remove('active');
                 btn.classList.add('active');
+                calcular();
+            });
+        });
+        
+        tipoBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.tipo-btn.active').classList.remove('active');
+                btn.classList.add('active');
+                actualizarInfoTipo();
                 calcular();
             });
         });
@@ -919,6 +1101,17 @@
             mostrarOpcionesBomba();
             calcular();
         });
+        
+        function actualizarInfoTipo() {
+            const tipoPiscina = document.querySelector('.tipo-btn.active')?.dataset.tipo || 'residencial';
+            const infoDiv = document.getElementById('tipo-info');
+            
+            if (tipoPiscina === 'residencial') {
+                infoDiv.innerHTML = '🏠 <strong>Residencial:</strong> Turnover 6-8h, uso familiar estándar, sistemas optimizados para eficiencia.';
+            } else {
+                infoDiv.innerHTML = '🏢 <strong>Comercial:</strong> Turnover 4-6h, uso intensivo, sistemas de alta capacidad y mayor filtración.';
+            }
+        }
         
         function mostrarDimensiones(shape) {
             document.getElementById('dimensiones-rectangular').style.display = 'none';
@@ -994,13 +1187,13 @@
             
             if (cascadaTamaño !== 'no') {
                 opcionesDiv.style.display = 'block';
-                actualizarInfoBomba();
+                actualizarInfoBombaConfig();
             } else {
                 opcionesDiv.style.display = 'none';
             }
         }
         
-        function actualizarInfoBomba() {
+        function actualizarInfoBombaConfig() {
             const tipoBomba = document.querySelector('.bomba-btn.active')?.dataset.tipo || 'independiente';
             const infoDiv = document.getElementById('bomba-info');
             
@@ -1011,8 +1204,49 @@
             }
         }
         
+        function seleccionarBomba(caudalRequerido, hpRequerido) {
+            // Combinar todas las bombas disponibles
+            const todasLasBombas = [...bombasSilver, ...bombasSupra];
+            
+            // Buscar la bomba más adecuada basada en caudal y HP
+            let bombaSeleccionada = null;
+            let mejorMatch = Infinity;
+            
+            for (const bomba of todasLasBombas) {
+                // Verificar que la bomba cubra el caudal mínimo requerido
+                if (bomba.caudal >= caudalRequerido && bomba.hp >= hpRequerido) {
+                    // Calcular qué tan cerca está del requerimiento (menor diferencia es mejor)
+                    const diferencia = (bomba.caudal - caudalRequerido) + (bomba.hp - hpRequerido) * 5;
+                    
+                    if (diferencia < mejorMatch) {
+                        mejorMatch = diferencia;
+                        bombaSeleccionada = bomba;
+                    }
+                }
+            }
+            
+            // Si no encontró una que cubra exactamente, buscar la más cercana por arriba
+            if (!bombaSeleccionada) {
+                for (const bomba of todasLasBombas) {
+                    if (bomba.caudal >= caudalRequerido * 0.8) { // Permitir 20% menos de caudal
+                        const diferencia = Math.abs(bomba.caudal - caudalRequerido) + Math.abs(bomba.hp - hpRequerido) * 3;
+                        
+                        if (diferencia < mejorMatch) {
+                            mejorMatch = diferencia;
+                            bombaSeleccionada = bomba;
+                        }
+                    }
+                }
+            }
+            
+            return bombaSeleccionada;
+        }
+        
         function obtenerEspecificaciones(volumen) {
             let specs;
+            
+            // Obtener tipo de piscina
+            const tipoPiscina = document.querySelector('.tipo-btn.active')?.dataset.tipo || 'residencial';
             
             // Verificar si hay cascada y sistema integrado
             const cascadaTamaño = cascadaSelect.value;
@@ -1029,110 +1263,97 @@
             // Aplicar tolerancia del 5% para evitar saltos bruscos
             const tolerancia = 0.95;
             
+            // Ajustar especificaciones según tipo de piscina
+            const factorComercial = tipoPiscina === 'comercial' ? 1.5 : 1.0; // 50% más capacidad para comercial
+            const turnoverComercial = tipoPiscina === 'comercial' ? '4-6h' : '6-8h';
+            
             if (volumen <= 40 * tolerancia || volumen <= 38) {
                 specs = {
-                    filtro: '16"-18"',
-                    bomba: 0.5 + bombaAdicional,
-                    inyectores: '3-4',
-                    skimmers: 1,
-                    turnover: '6-8h',
-                    tipoFiltro: 'Arena + Aseglass',
-                    velocidadFiltracion: '30-40 m³/h/m²'
+                    filtro: tipoPiscina === 'comercial' ? '18"-20"' : '16"-18"',
+                    bomba: (0.5 + bombaAdicional) * factorComercial,
+                    inyectores: tipoPiscina === 'comercial' ? '4-5' : '3-4',
+                    skimmers: tipoPiscina === 'comercial' ? 2 : 1,
+                    turnover: turnoverComercial,
+                    tipoFiltro: tipoPiscina === 'comercial' ? 'Aseglass Comercial' : 'Aseglass Residencial',
+                    velocidadFiltracion: tipoPiscina === 'comercial' ? '25-35 m³/h/m²' : '30-40 m³/h/m²'
                 };
             } else if (volumen <= 60 * tolerancia || volumen <= 57) {
                 specs = {
-                    filtro: '20"-22"',
-                    bomba: 0.75 + bombaAdicional,
-                    inyectores: '4-5',
-                    skimmers: '1-2',
-                    turnover: '6-8h',
-                    tipoFiltro: 'Arena + Aseglass',
-                    velocidadFiltracion: '30-40 m³/h/m²'
+                    filtro: tipoPiscina === 'comercial' ? '22"-24"' : '20"-22"',
+                    bomba: (0.75 + bombaAdicional) * factorComercial,
+                    inyectores: tipoPiscina === 'comercial' ? '5-6' : '4-5',
+                    skimmers: tipoPiscina === 'comercial' ? '2-3' : '1-2',
+                    turnover: turnoverComercial,
+                    tipoFiltro: tipoPiscina === 'comercial' ? 'Aseglass Comercial Plus' : 'Aseglass Estándar',
+                    velocidadFiltracion: tipoPiscina === 'comercial' ? '25-35 m³/h/m²' : '30-40 m³/h/m²'
                 };
             } else if (volumen <= 80 * tolerancia || volumen <= 76) {
                 specs = {
-                    filtro: '24"-26"',
-                    bomba: 1.0 + bombaAdicional,
-                    inyectores: '5-6',
-                    skimmers: 2,
-                    turnover: '6h',
-                    tipoFiltro: 'Aseglass Premium',
-                    velocidadFiltracion: '30-40 m³/h/m²'
+                    filtro: tipoPiscina === 'comercial' ? '26"-28"' : '24"-26"',
+                    bomba: (1.0 + bombaAdicional) * factorComercial,
+                    inyectores: tipoPiscina === 'comercial' ? '6-8' : '5-6',
+                    skimmers: tipoPiscina === 'comercial' ? 3 : 2,
+                    turnover: turnoverComercial,
+                    tipoFiltro: tipoPiscina === 'comercial' ? 'Aseglass Industrial' : 'Aseglass Premium',
+                    velocidadFiltracion: tipoPiscina === 'comercial' ? '25-40 m³/h/m²' : '30-40 m³/h/m²'
                 };
             } else if (volumen <= 100 * tolerancia || volumen <= 95) {
                 specs = {
-                    filtro: '28"-30"',
-                    bomba: 1.5 + bombaAdicional,
-                    inyectores: '6-8',
-                    skimmers: '2-3',
-                    turnover: '6h',
-                    tipoFiltro: 'Aseglass Comercial',
-                    velocidadFiltracion: '30-50 m³/h/m²'
+                    filtro: tipoPiscina === 'comercial' ? '30"-32"' : '28"-30"',
+                    bomba: (1.5 + bombaAdicional) * factorComercial,
+                    inyectores: tipoPiscina === 'comercial' ? '8-10' : '6-8',
+                    skimmers: tipoPiscina === 'comercial' ? '3-4' : '2-3',
+                    turnover: turnoverComercial,
+                    tipoFiltro: tipoPiscina === 'comercial' ? 'Aseglass Industrial Plus' : 'Aseglass Comercial',
+                    velocidadFiltracion: tipoPiscina === 'comercial' ? '25-50 m³/h/m²' : '30-50 m³/h/m²'
                 };
             } else {
                 specs = {
-                    filtro: '32"-36"',
-                    bomba: 2.0 + bombaAdicional,
-                    inyectores: '8-10',
-                    skimmers: 3,
-                    turnover: '4-6h',
-                    tipoFiltro: 'Aseglass Industrial',
-                    velocidadFiltracion: '40-60 m³/h/m²'
+                    filtro: tipoPiscina === 'comercial' ? '36"-42"' : '32"-36"',
+                    bomba: (2.0 + bombaAdicional) * factorComercial,
+                    inyectores: tipoPiscina === 'comercial' ? '10-12' : '8-10',
+                    skimmers: tipoPiscina === 'comercial' ? 4 : 3,
+                    turnover: turnoverComercial,
+                    tipoFiltro: tipoPiscina === 'comercial' ? 'Aseglass Industrial Premium' : 'Aseglass Industrial',
+                    velocidadFiltracion: tipoPiscina === 'comercial' ? '30-60 m³/h/m²' : '40-60 m³/h/m²'
                 };
             }
             
             // Si la bomba integrada excede ciertos límites, subir el filtro
             if (cascadaTamaño !== 'no' && tipoBomba === 'integrada') {
-                if (specs.bomba >= 1.25 && specs.filtro === '16"-18"') {
-                    specs.filtro = '20"-22"';
-                } else if (specs.bomba >= 1.5 && specs.filtro === '20"-22"') {
-                    specs.filtro = '24"-26"';
-                } else if (specs.bomba >= 2.0 && specs.filtro === '24"-26"') {
-                    specs.filtro = '28"-30"';
-                } else if (specs.bomba >= 2.75 && specs.filtro === '28"-30"') {
-                    specs.filtro = '32"-36"';
+                if (specs.bomba >= 1.25 && specs.filtro.includes('16')) {
+                    specs.filtro = tipoPiscina === 'comercial' ? '22"-24"' : '20"-22"';
+                } else if (specs.bomba >= 1.5 && specs.filtro.includes('20')) {
+                    specs.filtro = tipoPiscina === 'comercial' ? '26"-28"' : '24"-26"';
+                } else if (specs.bomba >= 2.0 && specs.filtro.includes('24')) {
+                    specs.filtro = tipoPiscina === 'comercial' ? '30"-32"' : '28"-30"';
+                } else if (specs.bomba >= 2.75 && specs.filtro.includes('28')) {
+                    specs.filtro = tipoPiscina === 'comercial' ? '36"-42"' : '32"-36"';
                 }
             }
             
             // Calcular tubería recomendada
-            const caudal = volumen / 6;
+            const tipoTurnover = tipoPiscina === 'comercial' ? 4 : 6; // Horas para cálculo base
+            const caudal = volumen / tipoTurnover;
+            
             if (caudal <= 5) {
-                specs.tuberiaSuccion = '2"';
-                specs.tuberiaRetorno = '1.5"-2"';
+                specs.tuberiaSuccion = tipoPiscina === 'comercial' ? '2.5"' : '2"';
+                specs.tuberiaRetorno = tipoPiscina === 'comercial' ? '2"-2.5"' : '1.5"-2"';
             } else if (caudal <= 10) {
-                specs.tuberiaSuccion = '2.5"';
-                specs.tuberiaRetorno = '2"-2.5"';
+                specs.tuberiaSuccion = tipoPiscina === 'comercial' ? '3"' : '2.5"';
+                specs.tuberiaRetorno = tipoPiscina === 'comercial' ? '2.5"-3"' : '2"-2.5"';
             } else if (caudal <= 15) {
-                specs.tuberiaSuccion = '3"';
-                specs.tuberiaRetorno = '2.5"-3"';
+                specs.tuberiaSuccion = tipoPiscina === 'comercial' ? '4"' : '3"';
+                specs.tuberiaRetorno = tipoPiscina === 'comercial' ? '3"-4"' : '2.5"-3"';
             } else {
-                specs.tuberiaSuccion = '4"';
-                specs.tuberiaRetorno = '3"-4"';
+                specs.tuberiaSuccion = tipoPiscina === 'comercial' ? '6"' : '4"';
+                specs.tuberiaRetorno = tipoPiscina === 'comercial' ? '4"-6"' : '3"-4"';
             }
             
             return specs;
         }
         
         function calcularAseglass(filtroSize, volumen, marca = 'panda') {
-            // Datos reales separados por marca
-            const especificacionesPANDA = {
-                '14': { arena: 27, volumen6h: 40.9, volumen8h: 54.5, modelo: 'FPD14T' },
-                '16': { arena: 45, volumen6h: 47.4, volumen8h: 63.2, modelo: 'FPD16T' },
-                '19': { arena: 79, volumen6h: 54.0, volumen8h: 72.0, modelo: 'FPD19T' },
-                '24': { arena: 136, volumen6h: 67.8, volumen8h: 90.4, modelo: 'FPD24T' },
-                '26': { arena: 163, volumen6h: 98.1, volumen8h: 130.8, modelo: 'FPD26T' },
-                '31': { arena: 227, volumen6h: 133.6, volumen8h: 178.1, modelo: 'FPD31T' }
-            };
-            
-            const especificacionesEMAUX = {
-                '14': { arena: 20, volumen6h: 32.0, volumen8h: 43.0, modelo: 'P350 (35cm)' },
-                '16': { arena: 35, volumen6h: 46.0, volumen8h: 61.0, modelo: 'P400 (40cm)' },
-                '18': { arena: 45, volumen6h: 58.0, volumen8h: 78.0, modelo: 'P450 (45cm)' },
-                '20': { arena: 85, volumen6h: 81.0, volumen8h: 108.0, modelo: 'P500 (50cm)' },
-                '26': { arena: 145, volumen6h: 115.0, volumen8h: 153.0, modelo: 'P650 (65cm)' },
-                '28': { arena: 210, volumen6h: 143.0, volumen8h: 190.0, modelo: 'P700 (70cm)' }
-            };
-            
             // Seleccionar especificaciones según marca
             const especificacionesFiltros = marca === 'panda' ? especificacionesPANDA : especificacionesEMAUX;
             const marcaNombre = marca === 'panda' ? 'PANDA' : 'EMAUX';
@@ -1157,8 +1378,8 @@
             
             if (!especificacion) {
                 // Buscar el más cercano
-                const diametros = Object.keys(especificacionesFiltros).map(Number).sort((a, b) => a - b);
-                const cercano = diametros.reduce((prev, curr) => {
+                const diametrosDisponibles = Object.keys(especificacionesFiltros).map(Number).sort((a, b) => a - b);
+                const cercano = diametrosDisponibles.reduce((prev, curr) => {
                     return Math.abs(curr - diametroPromedio) < Math.abs(prev - diametroPromedio) ? curr : prev;
                 });
                 claveUsada = cercano.toString();
@@ -1210,32 +1431,73 @@
             }
         }
         
+        function actualizarInfoBombaDetallada(bombaSeleccionada, caudalRequerido, specs) {
+            if (!bombaSeleccionada) {
+                document.getElementById('bomba-modelo').textContent = 'No disponible';
+                document.getElementById('bomba-caudal-real').textContent = '- m³/h';
+                document.getElementById('bomba-amperaje-110').textContent = '- A';
+                document.getElementById('bomba-amperaje-230').textContent = '- A';
+                document.getElementById('eficiencia-bomba').textContent = '-%';
+                document.getElementById('bomba-status').innerHTML = 
+                    '<div class="warning">⚠️ No hay bomba disponible que cubra los requerimientos</div>';
+                return;
+            }
+            
+            // Actualizar modelo de bomba
+            const modelo = `${bombaSeleccionada.hp} HP ${bombaSeleccionada.tipo}`;
+            document.getElementById('bomba-modelo').textContent = modelo;
+            document.getElementById('bomba-caudal-real').textContent = bombaSeleccionada.caudal + ' m³/h';
+            
+            // Actualizar amperajes
+            document.getElementById('bomba-amperaje-110').textContent = 
+                bombaSeleccionada.amperaje110 ? bombaSeleccionada.amperaje110 + ' A' : 'N/A';
+            document.getElementById('bomba-amperaje-230').textContent = 
+                bombaSeleccionada.amperaje230 ? bombaSeleccionada.amperaje230 + ' A' : 'N/A';
+            
+            // Calcular eficiencia (caudal real vs requerido)
+            const eficiencia = Math.min(100, Math.round((caudalRequerido / bombaSeleccionada.caudal) * 100));
+            document.getElementById('eficiencia-bomba').textContent = eficiencia + '%';
+            
+            // Status de la bomba
+            let statusHTML = '';
+            if (bombaSeleccionada.caudal >= caudalRequerido) {
+                const exceso = ((bombaSeleccionada.caudal - caudalRequerido) / caudalRequerido * 100).toFixed(1);
+                statusHTML = `<div class="success">✅ Bomba adecuada - Exceso de caudal: ${exceso}%</div>`;
+            } else {
+                const deficit = ((caudalRequerido - bombaSeleccionada.caudal) / caudalRequerido * 100).toFixed(1);
+                statusHTML = `<div class="warning">⚠️ Bomba insuficiente - Déficit: ${deficit}%</div>`;
+            }
+            
+            // Información adicional sobre consumo eléctrico
+            if (bombaSeleccionada.amperaje230) {
+                const potenciaW = bombaSeleccionada.amperaje230 * 230;
+                const costoMensual = (potenciaW * 8 * 30 / 1000 * 0.15).toFixed(0); // Estimación 8h/día, $0.15/kWh
+                statusHTML += `<div style="margin-top: 10px; font-size: 0.85em; opacity: 0.9;">
+                    💡 Consumo estimado: ${potenciaW.toFixed(0)}W - ~${costoMensual}/mes
+                </div>`;
+            }
+            
+            document.getElementById('bomba-status').innerHTML = statusHTML;
+        }
+        
         function calcular() {
             const volumen = calcularVolumen();
             
             if (volumen <= 0) {
                 // Limpiar resultados
-                document.getElementById('volumen-result').textContent = '- m³';
-                document.getElementById('filtro-result').textContent = '-"';
-                document.getElementById('bomba-result').textContent = '- HP';
-                document.getElementById('inyectores-result').textContent = '-';
-                document.getElementById('skimmers-result').textContent = '-';
-                document.getElementById('caudal-result').textContent = '- m³/h';
-                document.getElementById('tipo-filtro-result').textContent = '-';
-                document.getElementById('turnover-result').textContent = '-';
-                document.getElementById('tuberia-succion-result').textContent = '-';
-                document.getElementById('tuberia-retorno-result').textContent = '-';
-                document.getElementById('aseglass-kg').textContent = '- kg';
-                document.getElementById('agua-1cm').textContent = '- L';
-                document.getElementById('evaporacion-dia').textContent = '- L';
-                document.getElementById('retrolavado').textContent = '- L';
-                document.getElementById('galones-total').textContent = '- gal';
-                document.getElementById('cascada-info').style.display = 'none';
+                limpiarResultados();
                 return;
             }
             
             const specs = obtenerEspecificaciones(volumen);
-            const caudal = Math.round(volumen / 6 * 10) / 10;
+            
+            // Calcular caudal según tipo de piscina
+            const tipoPiscina = document.querySelector('.tipo-btn.active')?.dataset.tipo || 'residencial';
+            const horasTurnover = tipoPiscina === 'comercial' ? 4 : 6; // Comercial más rápido
+            const caudal = Math.round(volumen / horasTurnover * 10) / 10;
+            
+            // Seleccionar bomba basada en especificaciones técnicas reales
+            const bombaSeleccionada = seleccionarBomba(caudal, specs.bomba);
             
             // Actualizar resultados principales
             document.getElementById('volumen-result').textContent = volumen + ' m³';
@@ -1250,6 +1512,9 @@
             document.getElementById('turnover-result').textContent = specs.turnover;
             document.getElementById('tuberia-succion-result').textContent = specs.tuberiaSuccion;
             document.getElementById('tuberia-retorno-result').textContent = specs.tuberiaRetorno;
+            
+            // Actualizar información detallada de bomba
+            actualizarInfoBombaDetallada(bombaSeleccionada, caudal, specs);
             
             // Calcular Aseglass con datos reales según marca seleccionada
             const marcaSeleccionada = document.querySelector('.marca-btn.active').dataset.marca;
@@ -1272,6 +1537,32 @@
             document.getElementById('galones-total').textContent = galones.toLocaleString() + ' gal';
             
             // Manejar cascada
+            procesarCascada();
+        }
+        
+        function limpiarResultados() {
+            document.getElementById('volumen-result').textContent = '- m³';
+            document.getElementById('filtro-result').textContent = '-"';
+            document.getElementById('bomba-result').textContent = '- HP';
+            document.getElementById('inyectores-result').textContent = '-';
+            document.getElementById('skimmers-result').textContent = '-';
+            document.getElementById('caudal-result').textContent = '- m³/h';
+            document.getElementById('tipo-filtro-result').textContent = '-';
+            document.getElementById('turnover-result').textContent = '-';
+            document.getElementById('tuberia-succion-result').textContent = '-';
+            document.getElementById('tuberia-retorno-result').textContent = '-';
+            document.getElementById('aseglass-kg').textContent = '- kg';
+            document.getElementById('agua-1cm').textContent = '- L';
+            document.getElementById('evaporacion-dia').textContent = '- L';
+            document.getElementById('retrolavado').textContent = '- L';
+            document.getElementById('galones-total').textContent = '- gal';
+            document.getElementById('cascada-info').style.display = 'none';
+            
+            // Limpiar información de bomba
+            actualizarInfoBombaDetallada(null, 0, null);
+        }
+        
+        function procesarCascada() {
             const cascadaTamaño = cascadaSelect.value;
             const tipoBomba = document.querySelector('.bomba-btn.active')?.dataset.tipo || 'independiente';
             
@@ -1294,7 +1585,7 @@
                 }
                 
                 const statusHTML = `<div style="margin-top: 15px; font-size: 0.9em; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
-                    <strong>📐 Instalación:</strong> ${cascadaInfo.instalacion}<br>
+                    <strong>🔧 Instalación:</strong> ${cascadaInfo.instalacion}<br>
                     <strong>💧 Caudal mínimo:</strong> ${cascadaInfo.velocidadMin}
                 </div>`;
                 
@@ -1304,6 +1595,17 @@
                 document.getElementById('cascada-info').style.display = 'none';
             }
         }
+        
+        // Función que faltaba
+        function actualizarInfoBomba() {
+            actualizarInfoBombaConfig();
+        }
+        
+        // Inicializar calculadora
+        document.addEventListener('DOMContentLoaded', function() {
+            actualizarInfoTipo();
+            calcular();
+        });
         
         // Calcular inicialmente
         calcular();
